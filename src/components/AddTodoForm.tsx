@@ -13,6 +13,11 @@ function AddTodoForm({ addTodo }: AddTodoFormProps) {
     const [desc, setDesc] = useState<string>('');
 
     const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+        if (title.trim() === '' || desc.trim() === '') {
+            alert('Title and Description cannot be empty');
+            return;
+        }
         addTodo(title, desc);
         setTitle('');
         setDesc('');
@@ -24,6 +29,7 @@ function AddTodoForm({ addTodo }: AddTodoFormProps) {
                 <label>Title:</label>
                 <input
                     type="text"
+                    value={title} // Bug 6: Add value attribute
                     placeholder="Provide a title for the new To Do"
                     onChange={(e) => setTitle(e.target.value)}
                     required
@@ -32,7 +38,7 @@ function AddTodoForm({ addTodo }: AddTodoFormProps) {
             <div>
                 <label>Description:</label>
                 <textarea
-                    value={desc}
+                    value={desc} // Bug 6: Add value attribute
                     placeholder="Briefly describe the To Do task"
                     onChange={(e) => setDesc(e.target.value)}
                     required

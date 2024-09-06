@@ -25,13 +25,13 @@ function TodoItem({ todo, deleteTodo, toggleComplete, toggleUrgent }: TodoItemPr
             <h3>{todo.title}</h3>
             <p>{todo.description}</p>
             <div className="todo-buttons">
-                <button onClick={() => toggleComplete(todo.id)}>
+                <button onClick={() => toggleComplete(todo.id)} aria-label={todo.isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}>
                     {todo.isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
                 </button>
-                <button onClick={() => toggleUrgent(todo.id)}>
+                <button onClick={() => toggleUrgent(todo.id)} aria-label={todo.isUrgent ? 'Mark as not Urgent' : 'Mark as Urgent'}>
                     {todo.isUrgent ? 'Mark as not Urgent' : 'Mark as Urgent'}
                 </button>
-                {todo.isCompleted && <button onClick={() => deleteTodo(todo.id)}>Delete</button>}
+                <button onClick={() => deleteTodo(todo.id)} aria-label="Delete Todo">Delete</button>
             </div>
         </li>
     );

@@ -25,51 +25,43 @@ export default function Home() {
 
   const AddTodo = (title: string, desc: string) => {
     const newTodo: Todo = {
-      id: todos.length + 1,
-      title: title,
-      description: desc,
-      isCompleted: false,
-      isUrgent: false,
+        id: todos.length + 1,
+        title: title,
+        description: desc,
+        isCompleted: false,
+        isUrgent: false,
     };
 
-    todos.push(newTodo);
-    setTodos(todos);
+    setTodos([...todos, newTodo]); // Bug 4: Create a new array with the new todo item
   };
 
   const deleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id === id));
+    setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const toggleProperty = useCallback((id: number, property: keyof Pick<Todo, 'isCompleted' | 'isUrgent'>) => {
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        todo[property] = !todo[property] as boolean;
-      }
-      return todo;
-    });
-    setTodos(updatedTodos);
-  }, [setTodos]);
+  // Bug 3: Ensure that the toggleProperty function correctly updates the state
+  const toggleProperty = (id: number, property: keyof Todo) => {
+    setTodos(todos.map(todo => 
+        todo.id === id ? { ...todo, [property]: !todo[property] } : todo
+    ));
+  };
 
-  const displayTodoList = (todoList:Todo[]) => {
+  const displayTodoList = (todoList: Todo[]) => {
     return (
-      <TodoList
-        todos={todoList}
-        deleteTodo={deleteTodo} 
-        toggleComplete={(id) => toggleProperty(id, 'isCompleted')} 
-        toggleUrgent={(id) => toggleProperty(id, 'isUrgent')} 
-      />
+        <TodoList
+            key={todoList.map(todo => todo.id).join(',')} // Bug 2: Add a unique key
+            todos={todoList}
+            deleteTodo={deleteTodo}
+            toggleComplete={(id) => toggleProperty(id, 'isCompleted')}
+            toggleUrgent={(id) => toggleProperty(id, 'isUrgent')}
+        />
     );
-  };
+};
 
   const displayTodos = (displayUrgent: boolean) => {
-    return displayTodoList(todos.filter((x) => {
-      if (displayUrgent) {
-        return !x.isCompleted && x.isUrgent === displayUrgent;
-      } else {
-        return !x.isCompleted && x.isUrgent !== displayUrgent;
-      }
-    }));
-  };
+    // Bug 1: Incorrect displayTodos Logic
+    return displayTodoList(todos.filter((x) => !x.isCompleted && x.isUrgent === displayUrgent));
+};
 
   const displayComplete = () => {
     return displayTodoList(todos.filter((x) => x.isCompleted));
